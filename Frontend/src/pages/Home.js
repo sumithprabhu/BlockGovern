@@ -8,7 +8,7 @@ import { Governance } from "../Governance";
 import axios from 'axios';
 
 export default function Home() {
-  const CONTRACT_ADDRESS="0x1342Aff9e1da497252Fed598a9b8B0ab9511Bfc4";
+  const CONTRACT_ADDRESS="0xbFC058B078d191FE0aE0b23A79daE2af33c354Db";
   const navigate = useNavigate();
 
   const [companyName, setCompanyName] = useState("");
@@ -99,7 +99,7 @@ export default function Home() {
 //const result="abc"
     let createAccount = await contract.create_account(
       companyName,
-      amount*10*18,
+      amount*10**15,
       result
     );
     await createAccount.wait();

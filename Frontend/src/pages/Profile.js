@@ -22,15 +22,17 @@ export default function Profile() {
   const [Headline, setHeadline] = useState("Headline");
   const [About, SetAbout] = useState("this is about the vote");
   const [images, setImages] = useState([]);
-  const [allVotes, setAllVotes] = useState([]);
   const [walletConnected, setWalletConnected] = useState(false);
   const [wallet, setWallet] = useState("Please Connect Your Wallet to Proceed");
   const [currentAccount, setCurrentAccount] = useState("acc");
   const web3ModalRef = useRef();
   const [sig, setSig] = useState("");
   const [contract, setContract] = useState(null);
-  const CONTRACT_ADDRESS = "0x1342Aff9e1da497252Fed598a9b8B0ab9511Bfc4";
+  const CONTRACT_ADDRESS = "0xbFC058B078d191FE0aE0b23A79daE2af33c354Db";
   const [company_about, setCompany_about] = useState("");
+  const[postsid,setPostsid]=useState([]);
+  const [poststat,setPoststat]=useState(false);
+  const [posts,setPosts]=useState([]);
 
   const getTextData = async (hash) => {
     try {
@@ -54,17 +56,35 @@ export default function Profile() {
     console.log(e.target.value);
     SetAbout(e.target.value);
   };
+  const handleJsonSubmit = async () => {
+    try {
+      const response = await axios.post('http://localhost:3001/json', {
+        body: About,
+        title: Headline,
+      });
 
-  const handleCreatePost = () => {
+      console.log(response.data);
+      return response.data.hash;
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  const handleCreatePost = async() => {
     if (Headline.trim() && About.trim() && images.length > 0) {
       const newVote = {
         headline: Headline,
         about: About,
         image: images,
       };
-
-      setAllVotes([...allVotes, newVote]);
-      console.log(allVotes);
+      const result=await handleJsonSubmit();
+      console.log("resultpost:",result)
+      const amount = await contract.retrieve_post_amount(companyName)
+      console.log(parseInt(amount))
+      const createpost=await contract.post(companyName,result,{value: (parseInt(amount).toString())});
+      await createpost.wait();
+      console.log(createpost.hash);
+      
+      
       setHeadline("");
       SetAbout("");
       setImages([]);
@@ -75,19 +95,40 @@ export default function Profile() {
     await checkIfWalletIsConnected();
     setWalletConnected(true);
     setWallet("Wallet connected");
-
     const signer = await checkIfWalletIsConnected(true);
     setCurrentAccount(await signer.getAddress());
     const NContract = new Contract(CONTRACT_ADDRESS, Governance, signer);
     setContract(NContract);
     console.log("signer", signer);
   };
-  const connect_contract = async () => {
+  
+  const retrieve_about = async () => {
     const company_about_id = await contract.retrive_about(companyName);
     const company_about = await getTextData(company_about_id);
     setCompany_about(company_about);
+    
+    retrieve_post();
+  
   };
-
+  const retrieve_post=async()=>{
+    const postarr=await contract.retrieve_post(companyName);
+    //console.log(postarr)
+    setPostsid(postarr);
+    console.log(postsid);
+    setPoststat(true);
+    await retrieve_post_intoarr();
+    
+    
+  
+}
+const retrieve_post_intoarr=async()=>
+{
+  for(let index=0;index<postsid.length;index++){
+    const result= await getJsonData(postsid[index]);
+    setPosts(previtems=>[...previtems,result]);
+  }
+  
+}
   const checkIfWalletIsConnected = async (needSigner = false) => {
     const provider = await web3ModalRef.current.connect();
     const web3Provider = new providers.Web3Provider(provider);
@@ -106,9 +147,10 @@ export default function Profile() {
   };
   useEffect(() => {
     if (contract) {
-      connect_contract();
+      retrieve_about();
     }
   }, [contract]);
+  
 
   useEffect(() => {
     // if wallet is not connected, create a new instance of Web3Modal and connect the MetaMask wallet
@@ -122,9 +164,24 @@ export default function Profile() {
       });
       console.log(currentAccount);
       connectWallet();
+      
     }
   }, [walletConnected]);
 
+  const getJsonData = async (hash) => {
+    try {
+      const response = await axios.get(`http://localhost:3001/json/${hash}`);
+      console.log(response.data);
+      const result=[]
+      result.push(response.data.body);
+      result.push(response.data.title);
+      console.log("result:",result)
+      return result;
+      
+    } catch (error) {
+      console.error(error);
+    }
+  };
   return (
     <div className="homemain">
       <div className="homeheader">
@@ -152,14 +209,15 @@ export default function Profile() {
         </div>
 
         <div className="profilevote">
-          {allVotes.length > 0 ? (
+          {posts.length > 0 ? (
             // If there are votes, map and render the Vote components
-            allVotes.map((vote, index) => (
+            posts.map((post, index) => (
+
               <Vote
                 key={index}
-                headline={vote.headline}
-                about={vote.about}
-                image={vote.image}
+                headline={post[0]}
+                about={post[1]}
+                image={post[0]}
               />
             ))
           ) : (
@@ -170,7 +228,7 @@ export default function Profile() {
 
         <div>
           <div className="createpost">
-            <h2>Create vote</h2>
+            <h2>Create Post</h2>
 
             <input
               onChange={handleHeadlineChange}

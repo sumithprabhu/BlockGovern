@@ -6,11 +6,11 @@ export default function Vote({ headline, about, image }) {
   const [voting, setVoting] = useState(true);
   const [imageUrl, setImageUrl] = useState(null);
   const [voted, setVoted] = useState(false);
-  const [voteChoice, setVoteChoice] = useState(""); // It will store "Yes" or "No" based on the checkbox selection
+  const [voteChoice, setVoteChoice] = useState(); // It will store "Yes" or "No" based on the checkbox selection
 
-  const handleImageLoad = (e) => {
-    setImageUrl(e.target.result);
-  };
+  // const handleImageLoad = (e) => {
+  //   setImageUrl(e.target.result);
+  // };
 
   const handleVoteClick = () => {
     if (voting) {
@@ -25,11 +25,11 @@ export default function Vote({ headline, about, image }) {
     }
   };
 
-  if (image && image.length > 0) {
-    const reader = new FileReader();
-    reader.onload = handleImageLoad;
-    reader.readAsDataURL(image[0]);
-  }
+  // if (image && image.length > 0) {
+  //   const reader = new FileReader();
+  //   reader.onload = handleImageLoad;
+  //   reader.readAsDataURL(image[0]);
+  // }
 
   return (
     <div className="vote">
@@ -69,7 +69,7 @@ export default function Vote({ headline, about, image }) {
                     <input
                       type="checkbox"
                       onChange={(e) =>
-                        setVoteChoice(e.target.checked ? "Yes" : "No")
+                        setVoteChoice(e.target.checked ? 1: 0)
                       }
                     />
                     <span class="slider"></span>
