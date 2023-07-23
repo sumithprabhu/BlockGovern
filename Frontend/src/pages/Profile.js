@@ -16,19 +16,18 @@ export default function Profile() {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const companyName = searchParams.get("companyName") || "Default Company"; // Use a default value if companyName is not provided
-  const companyAbout = searchParams.get("CompanyAbout") || "Default About";
-  const votecost = searchParams.get("votecost") || "Default Amount";
 
   const [Headline, setHeadline] = useState("Headline");
+  const [cost, setCost] = useState();
   const [About, SetAbout] = useState("this is about the vote");
-  const [images, setImages] = useState([]);
+ 
   const [walletConnected, setWalletConnected] = useState(false);
   const [wallet, setWallet] = useState("Please Connect Your Wallet to Proceed");
   const [currentAccount, setCurrentAccount] = useState("acc");
   const web3ModalRef = useRef();
   const [sig, setSig] = useState("");
   const [contract, setContract] = useState(null);
-  const CONTRACT_ADDRESS = "0xbFC058B078d191FE0aE0b23A79daE2af33c354Db";
+  const CONTRACT_ADDRESS = "0xE677c862F37fD376C31Fb3BCe5C8D375a7b4D0C8";
   const [company_about, setCompany_about] = useState("");
   const[postsid,setPostsid]=useState([]);
   const [poststat,setPoststat]=useState(false);
@@ -43,9 +42,9 @@ export default function Profile() {
       console.error(error);
     }
   };
-
-  const handleImageChange = (e) => {
-    setImages(e.target.files);
+  const handleCostChange = (e) => {
+    console.log(e.target.value);
+    setCost(e.target.value);
   };
 
   const handleHeadlineChange = (e) => {
@@ -70,24 +69,21 @@ export default function Profile() {
     }
   };
   const handleCreatePost = async() => {
-    if (Headline.trim() && About.trim() && images.length > 0) {
-      const newVote = {
-        headline: Headline,
-        about: About,
-        image: images,
-      };
+    if (Headline.trim() && About.trim() ) {
+      
       const result=await handleJsonSubmit();
       console.log("resultpost:",result)
       const amount = await contract.retrieve_post_amount(companyName)
       console.log(parseInt(amount))
-      const createpost=await contract.post(companyName,result,{value: (parseInt(amount).toString())});
+      const createpost=await contract.post(companyName,result,cost*10**14,{value: (parseInt(amount).toString())});
       await createpost.wait();
       console.log(createpost.hash);
       
       
       setHeadline("");
       SetAbout("");
-      setImages([]);
+      setCost();
+      
     }
   };
 
@@ -103,7 +99,7 @@ export default function Profile() {
   };
   
   const retrieve_about = async () => {
-    const company_about_id = await contract.retrive_about(companyName);
+    const company_about_id = await contract.retrieve_about(companyName);
     const company_about = await getTextData(company_about_id);
     setCompany_about(company_about);
     
@@ -116,20 +112,20 @@ export default function Profile() {
     setPostsid(postarr);
     console.log(postsid);
     setPoststat(true);
-    await retrieve_post_intoarr();
-    
-    
-  
+    await retrieve_post_intoarr();  
 }
+
+
 const retrieve_post_intoarr=async()=>
 {
   for(let index=0;index<postsid.length;index++){
     const result= await getJsonData(postsid[index]);
     setPosts(previtems=>[...previtems,result]);
   }
-  
 }
-  const checkIfWalletIsConnected = async (needSigner = false) => {
+
+
+const checkIfWalletIsConnected = async (needSigner = false) => {
     const provider = await web3ModalRef.current.connect();
     const web3Provider = new providers.Web3Provider(provider);
 
@@ -145,14 +141,16 @@ const retrieve_post_intoarr=async()=>
     }
     return web3Provider;
   };
-  useEffect(() => {
+
+
+useEffect(() => {
     if (contract) {
       retrieve_about();
     }
   }, [contract]);
   
 
-  useEffect(() => {
+useEffect(() => {
     // if wallet is not connected, create a new instance of Web3Modal and connect the MetaMask wallet
     if (!walletConnected) {
       // Assign the Web3Modal class to the reference object by setting it's `current` value
@@ -168,13 +166,15 @@ const retrieve_post_intoarr=async()=>
     }
   }, [walletConnected]);
 
-  const getJsonData = async (hash) => {
+
+const getJsonData = async (hash) => {
     try {
       const response = await axios.get(`http://localhost:3001/json/${hash}`);
       console.log(response.data);
       const result=[]
       result.push(response.data.body);
       result.push(response.data.title);
+      result.push(hash);
       console.log("result:",result)
       return result;
       
@@ -182,6 +182,8 @@ const retrieve_post_intoarr=async()=>
       console.error(error);
     }
   };
+
+
   return (
     <div className="homemain">
       <div className="homeheader">
@@ -196,8 +198,6 @@ const retrieve_post_intoarr=async()=>
             : "Connect"}
         </button>
       </div>
-      {/* <div className="companyname">{companyName}</div>
-      <h1 className="companyname">{votecost}</h1> */}
 
       <div className="profile">
         <div className="profileabout2">
@@ -210,14 +210,16 @@ const retrieve_post_intoarr=async()=>
 
         <div className="profilevote">
           {posts.length > 0 ? (
-            // If there are votes, map and render the Vote components
+            
             posts.map((post, index) => (
 
               <Vote
                 key={index}
                 headline={post[0]}
                 about={post[1]}
-                image={post[0]}
+                contract={contract}
+                post_cont_id={post[2]}
+                companyName={companyName}
               />
             ))
           ) : (
@@ -233,27 +235,16 @@ const retrieve_post_intoarr=async()=>
             <input
               onChange={handleHeadlineChange}
               type="text"
-              placeholder="Enter Headline"
+              placeholder="Enter Title"
             />
-            <p>Enter the vote description :</p>
-            <input onChange={handleAboutChange} type="text" />
-            {/* <input onChange={handleAmountChange} type="number" min="0" /> */}
-            <p>Enter company's logo :</p>
-            <input
-              type="file"
-              multiple
-              accept="image/*"
-              onChange={handleImageChange}
-            />
+            
+            <input onChange={handleAboutChange} type="text" placeholder="Enter the post body"/>
+            <input onChange={handleCostChange} type="text" placeholder="Enter the Cost for each vote (10^14 ethers)"/>
             <button class="button-40" onClick={handleCreatePost}>
               Create
             </button>
           </div>
-          <div className="gobackbutton">
-            <button class="button-30" onClick={() => navigate(-1)}>
-              go back
-            </button>
-          </div>
+          
         </div>
       </div>
     </div>

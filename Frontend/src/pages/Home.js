@@ -8,7 +8,7 @@ import { Governance } from "../Governance";
 import axios from 'axios';
 
 export default function Home() {
-  const CONTRACT_ADDRESS="0xbFC058B078d191FE0aE0b23A79daE2af33c354Db";
+  const CONTRACT_ADDRESS="0xE677c862F37fD376C31Fb3BCe5C8D375a7b4D0C8";
   const navigate = useNavigate();
 
   const [companyName, setCompanyName] = useState("");
@@ -90,13 +90,11 @@ export default function Home() {
   const handleCreateButtonClick = async () => {
     const queryParams = new URLSearchParams();
     queryParams.append("companyName", companyName);
-    queryParams.append("CompanyAbout", CompanyAbout);
-    queryParams.append("votecost", amount)
-
-
+    
     const result=  await handleTextSubmit();
     console.log("result",result)
 //const result="abc"
+
     let createAccount = await contract.create_account(
       companyName,
       amount*10**15,
@@ -104,6 +102,7 @@ export default function Home() {
     );
     await createAccount.wait();
     console.log(createAccount.hash);
+
 
     ;
     navigate(`/Profile?${queryParams.toString()}`);
@@ -124,7 +123,7 @@ export default function Home() {
     }
   }, [walletConnected]);
 
-
+  
   return (
     <div>
       <div className="homeheader">
@@ -150,7 +149,7 @@ export default function Home() {
             onChange={handleAmountChange}
             type="number"
             min="0"
-            placeholder="Enter the cost of vote"
+            placeholder="Enter the cost of vote (10^15 ethers)"
           />
 
           <button class="button-30" onClick={handleCreateButtonClick}>

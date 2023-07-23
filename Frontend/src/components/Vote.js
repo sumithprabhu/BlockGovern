@@ -1,28 +1,23 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "../App.css";
-import img from "../images/st.png";
+import ProgressBar from 'react-bootstrap/ProgressBar';
 
-export default function Vote({ headline, about, image }) {
+
+export default function Vote({ headline, about,contract ,post_cont_id,companyName}) {
   const [voting, setVoting] = useState(true);
-  const [imageUrl, setImageUrl] = useState(null);
-  const [voted, setVoted] = useState(false);
-  const [voteChoice, setVoteChoice] = useState(); // It will store "Yes" or "No" based on the checkbox selection
+  const [voteChoice, setVoteChoice] = useState(0); // It will store "Yes" or "No" based on the checkbox selection
+  const [percvote,setPercvote]=useState(0)
 
   // const handleImageLoad = (e) => {
   //   setImageUrl(e.target.result);
   // };
 
-  const handleVoteClick = () => {
-    if (voting) {
-      if (voteChoice === "") {
-        // If the user hasn't selected any vote choice, do not proceed
-        return;
-      }
+  const handleVoteClick = async() => {
+    const cost=await contract.retrieve_vote_amount(post_cont_id);
 
-      setVoting(false);
-      setVoted(true); // Marking that the user has voted
-      // Send the vote data to the server or perform any other necessary actions
-    }
+    const vote_sub= await contract.vote(companyName,voteChoice,post_cont_id,{value: (parseInt(cost).toString())});
+    await vote_sub.wait()
+    console.log(vote_sub.hash)
   };
 
   // if (image && image.length > 0) {
@@ -30,39 +25,30 @@ export default function Vote({ headline, about, image }) {
   //   reader.onload = handleImageLoad;
   //   reader.readAsDataURL(image[0]);
   // }
+  const load_vote=async()=>{
+    const yes=await contract.retrieve_vote_yes(post_cont_id)
+    const no=await contract.retrieve_vote_no(post_cont_id)
+    const perc=(parseInt(yes)/(parseInt(yes)+parseInt(no)))*100;
+    setPercvote(perc)
+  };
+
+  useEffect(()=>{
+
+    load_vote()
+  },[])
 
   return (
     <div className="vote">
-      {voted ? ( // If the user has voted, display "Voted Successfully" and the vote choice (Yes/No)
         <div className="votebutton">
           <div className="profilevotemain">
             <div className="profilevoteleft">
-              <h2>{headline}</h2>
-              <p>{about}</p>
-              <div class="progress">vote %</div>
+              <h2>{about}</h2>
+              <p>{headline}</p>
+              <div className="progress" style={{ height: 30 }}>
+        <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{ width: `${percvote}%` }}>{percvote}%</div>
+      </div>
             </div>
             <div className="profilevoteright">
-              {imageUrl && (
-                <img className="voteimage" src={imageUrl} alt="Profile" />
-              )}
-              <p>Voted Successfully</p>
-              <p>You voted {voteChoice}</p>
-            </div>
-          </div>
-        </div>
-      ) : (
-        // If the user has not voted, display the voting UI (checkbox and vote button)
-        <div className="votebutton">
-          <div className="profilevotemain">
-            <div className="profilevoteleft">
-              <h2>{headline}</h2>
-              <p>{about}</p>
-              <div class="progress">vote %</div>
-            </div>
-            <div className="profilevoteright">
-              {imageUrl && (
-                <img className="voteimage" src={imageUrl} alt="Profile" />
-              )}
               {voting && (
                 <>
                   <label class="switch">
@@ -86,7 +72,7 @@ export default function Vote({ headline, about, image }) {
             </div>
           </div>
         </div>
-      )}
+      
     </div>
   );
 }
