@@ -4,7 +4,7 @@ import { useState ,useRef,useEffect} from "react";
 import "../App.css";
 import Web3Modal from "web3modal";
 import { ethers, providers, Contract } from "ethers";
-import { Governance } from "../Governance";
+import { Governance } from "../assets/Governance";
 import axios from 'axios';
 
 export default function Home() {

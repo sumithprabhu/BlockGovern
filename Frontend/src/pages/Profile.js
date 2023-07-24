@@ -7,7 +7,7 @@ import { useState, useRef, useEffect } from "react";
 import Button from "react-bootstrap/Button";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../App.css";
-import { Governance } from "../Governance";
+import { Governance } from "../assets/Governance";
 import { ethers, providers, Contract } from "ethers";
 import Web3Modal from "web3modal";
 
