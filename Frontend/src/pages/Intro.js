@@ -15,7 +15,7 @@ export default function Intro() {
         <div className="introabout">
           <h2 className="introheader">About BlockGovernance</h2>
           <h4>
-            A tool or a platform which makes decentralized governance easy.
+            A tool or a platform which makes decentralized governance easy.
             Lorem Ipsum is simply dummy text of the printing and typesetting
             industry. Lorem Ipsum has been the industry's standard dummy text
             ever since the 1500s, when an unknown printer took a galley of type

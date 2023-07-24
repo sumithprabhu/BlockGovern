@@ -6,6 +6,7 @@ import Web3Modal from "web3modal";
 import { ethers, providers, Contract } from "ethers";
 import { Governance } from "../assets/Governance";
 import axios from 'axios';
+import TransactionPopUp from "../components/TransactionPopUp";
 
 export default function Home() {
   const CONTRACT_ADDRESS="0xE677c862F37fD376C31Fb3BCe5C8D375a7b4D0C8";
@@ -15,11 +16,12 @@ export default function Home() {
   const [CompanyAbout, setCompanyAbout] = useState("");
   const [amount, setAmount] = useState();
   const [walletConnected, setWalletConnected] = useState(false);
-  const [wallet, setWallet] = useState("Please Connect Your Wallet to Proceed");
+
   const [currentAccount, setCurrentAccount] = useState("acc");
   const web3ModalRef = useRef();
-  const [sig, setSig] = useState("");
   const [contract, setContract] = useState(null);
+  const [loading,setLoading]=useState(false);
+  const [transactionUpdates,setTransactionUpdates] =useState("");
   
 
 
@@ -27,7 +29,7 @@ export default function Home() {
     
     await checkIfWalletIsConnected();
     setWalletConnected(true);
-    setWallet("Wallet connected");
+   
 
     const signer = await checkIfWalletIsConnected(true);
     setCurrentAccount(await signer.getAddress());
@@ -90,7 +92,8 @@ export default function Home() {
   const handleCreateButtonClick = async () => {
     const queryParams = new URLSearchParams();
     queryParams.append("companyName", companyName);
-    
+    setLoading(true);
+    setTransactionUpdates("Creating company profile")
     const result=  await handleTextSubmit();
     console.log("result",result)
 //const result="abc"
@@ -102,17 +105,16 @@ export default function Home() {
     );
     await createAccount.wait();
     console.log(createAccount.hash);
-
+    setLoading(false);
 
     ;
     navigate(`/Profile?${queryParams.toString()}`);
   };
 
   useEffect(() => {
-    // if wallet is not connected, create a new instance of Web3Modal and connect the MetaMask wallet
+
     if (!walletConnected) {
-      // Assign the Web3Modal class to the reference object by setting it's `current` value
-      // The `current` value is persisted throughout as long as this page is open
+   
       web3ModalRef.current = new Web3Modal({
         network: "mumbai",
         providerOptions: {},
@@ -157,6 +159,13 @@ export default function Home() {
           </button>
         </div>
       </div>
+      {loading ? (
+        <TransactionPopUp
+          setLoading={setLoading}
+          transactionUpdates={transactionUpdates}
+          setTransactionUpdates={setTransactionUpdates}
+        />
+      ) : null}
 
       {/* <button onClick={() => navigate("/Profile")}>Create</button> */}
     </div>

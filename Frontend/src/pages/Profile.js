@@ -10,28 +10,31 @@ import "../App.css";
 import { Governance } from "../assets/Governance";
 import { ethers, providers, Contract } from "ethers";
 import Web3Modal from "web3modal";
+import TransactionPopUp from "../components/TransactionPopUp";
 
 export default function Profile() {
-  const navigate = useNavigate();
+ 
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const companyName = searchParams.get("companyName") || "Default Company"; // Use a default value if companyName is not provided
 
-  const [Headline, setHeadline] = useState("Headline");
-  const [cost, setCost] = useState();
-  const [About, SetAbout] = useState("this is about the vote");
+  const [Headline, setHeadline] = useState("");
+  const [cost, setCost] = useState(0);
+  const [About, SetAbout] = useState("");
  
   const [walletConnected, setWalletConnected] = useState(false);
-  const [wallet, setWallet] = useState("Please Connect Your Wallet to Proceed");
+ 
   const [currentAccount, setCurrentAccount] = useState("acc");
   const web3ModalRef = useRef();
-  const [sig, setSig] = useState("");
+
   const [contract, setContract] = useState(null);
   const CONTRACT_ADDRESS = "0xE677c862F37fD376C31Fb3BCe5C8D375a7b4D0C8";
   const [company_about, setCompany_about] = useState("");
   const[postsid,setPostsid]=useState([]);
-  const [poststat,setPoststat]=useState(false);
+
   const [posts,setPosts]=useState([]);
+  const [loading,setLoading]=useState(false);
+  const [transactionUpdates,setTransactionUpdates] =useState("");
 
   const getTextData = async (hash) => {
     try {
@@ -70,7 +73,8 @@ export default function Profile() {
   };
   const handleCreatePost = async() => {
     if (Headline.trim() && About.trim() ) {
-      
+      setLoading(true);
+      setTransactionUpdates("Publishing post")
       const result=await handleJsonSubmit();
       console.log("resultpost:",result)
       const amount = await contract.retrieve_post_amount(companyName)
@@ -78,6 +82,7 @@ export default function Profile() {
       const createpost=await contract.post(companyName,result,cost*10**14,{value: (parseInt(amount).toString())});
       await createpost.wait();
       console.log(createpost.hash);
+      setLoading(false);
       
       
       setHeadline("");
@@ -90,7 +95,7 @@ export default function Profile() {
   const connectWallet = async () => {
     await checkIfWalletIsConnected();
     setWalletConnected(true);
-    setWallet("Wallet connected");
+  
     const signer = await checkIfWalletIsConnected(true);
     setCurrentAccount(await signer.getAddress());
     const NContract = new Contract(CONTRACT_ADDRESS, Governance, signer);
@@ -111,7 +116,6 @@ export default function Profile() {
     //console.log(postarr)
     setPostsid(postarr);
     console.log(postsid);
-    setPoststat(true);
     await retrieve_post_intoarr();  
 }
 
@@ -236,10 +240,11 @@ const getJsonData = async (hash) => {
               onChange={handleHeadlineChange}
               type="text"
               placeholder="Enter Title"
+              value={Headline}
             />
             
-            <input onChange={handleAboutChange} type="text" placeholder="Enter the post body"/>
-            <input onChange={handleCostChange} type="text" placeholder="Enter the Cost for each vote (10^14 ethers)"/>
+            <input onChange={handleAboutChange} type="text" placeholder="Enter the post body" value={About}/>
+            <input onChange={handleCostChange} type="text" placeholder="Enter the Cost for each vote (10^14 ethers)"value={cost}/>
             <button class="button-40" onClick={handleCreatePost}>
               Create
             </button>
@@ -247,6 +252,13 @@ const getJsonData = async (hash) => {
           
         </div>
       </div>
+      {loading ? (
+        <TransactionPopUp
+          setLoading={setLoading}
+          transactionUpdates={transactionUpdates}
+          setTransactionUpdates={setTransactionUpdates}
+        />
+      ) : null}
     </div>
   );
 }

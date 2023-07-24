@@ -1,23 +1,29 @@
 import { useEffect, useState } from "react";
 import "../App.css";
-import ProgressBar from 'react-bootstrap/ProgressBar';
+import TransactionPopUp from "./TransactionPopUp";
+
 
 
 export default function Vote({ headline, about,contract ,post_cont_id,companyName}) {
   const [voting, setVoting] = useState(true);
   const [voteChoice, setVoteChoice] = useState(0); // It will store "Yes" or "No" based on the checkbox selection
   const [percvote,setPercvote]=useState(0)
+  const [loading,setLoading]=useState(false);
+  const [transactionUpdates,setTransactionUpdates] =useState("");
 
   // const handleImageLoad = (e) => {
   //   setImageUrl(e.target.result);
   // };
 
   const handleVoteClick = async() => {
+    setLoading(true);
+    setTransactionUpdates("Publishing vote");
     const cost=await contract.retrieve_vote_amount(post_cont_id);
 
     const vote_sub= await contract.vote(companyName,voteChoice,post_cont_id,{value: (parseInt(cost).toString())});
     await vote_sub.wait()
     console.log(vote_sub.hash)
+    setLoading(false)
   };
 
   // if (image && image.length > 0) {
@@ -71,6 +77,13 @@ export default function Vote({ headline, about,contract ,post_cont_id,companyNam
               )}
             </div>
           </div>
+          {loading ? (
+        <TransactionPopUp
+          setLoading={setLoading}
+          transactionUpdates={transactionUpdates}
+          setTransactionUpdates={setTransactionUpdates}
+        />
+      ) : null}
         </div>
       
     </div>
