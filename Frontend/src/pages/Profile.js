@@ -19,7 +19,7 @@ export default function Profile() {
   const companyName = searchParams.get("companyName") || "Default Company"; // Use a default value if companyName is not provided
 
   const [Headline, setHeadline] = useState("");
-  const [cost, setCost] = useState(0);
+  const [cost, setCost] = useState();
   const [About, SetAbout] = useState("");
  
   const [walletConnected, setWalletConnected] = useState(false);
@@ -189,7 +189,7 @@ const getJsonData = async (hash) => {
 
 
   return (
-    <div className="homemain">
+    <div >
       <div className="homeheader">
         <button className="homeheaderbutton">
           <Header />
@@ -206,8 +206,8 @@ const getJsonData = async (hash) => {
       <div className="profile">
         <div className="profileabout2">
           <div className="profileabout">
-            <h1 children="h1about">About </h1>
-            <h3>{companyName}</h3>
+            <h1 children="h1about">{companyName} </h1>
+            <h4>About</h4>
             <p className="companyabout">{company_about}</p>
           </div>
         </div>
@@ -241,10 +241,11 @@ const getJsonData = async (hash) => {
               type="text"
               placeholder="Enter Title"
               value={Headline}
+              className="homeforminput"
             />
             
-            <input onChange={handleAboutChange} type="text" placeholder="Enter the post body" value={About}/>
-            <input onChange={handleCostChange} type="text" placeholder="Enter the Cost for each vote (10^14 ethers)"value={cost}/>
+            <textarea rows={4} className="homeforminput" onChange={handleAboutChange} type="text" placeholder="Enter the post body" value={About}/>
+            <textarea rows={2}  className="homeforminput" onChange={handleCostChange} type="text" placeholder="Enter the Cost for each vote (10^14 ethers)"value={cost}/>
             <button class="button-40" onClick={handleCreatePost}>
               Create
             </button>

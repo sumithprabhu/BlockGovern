@@ -128,7 +128,7 @@ export default function Home() {
   
   return (
     <div>
-      <div className="homeheader">
+      <div className="introheader1">
         <button className="homeheaderbutton" onClick={() => navigate(-1)}>
           <Header />
         </button>
@@ -141,17 +141,22 @@ export default function Home() {
             type="text"
             onChange={handleCompanyNameChange}
             placeholder="Company's Name"
+            class="homeforminput"
           />
-          <input
+          <textarea
             type="text"
             onChange={handleCompanyAbout}
             placeholder="About Company "
+            class="homeforminput"
+            rows={4}
+            
           />
           <input
             onChange={handleAmountChange}
             type="number"
             min="0"
             placeholder="Enter the cost of vote (10^15 ethers)"
+            class="homeforminput"
           />
 
           <button class="button-30" onClick={handleCreateButtonClick}>

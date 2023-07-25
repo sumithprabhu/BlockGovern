@@ -8,7 +8,8 @@
   font-size: 2em;
 }
 .Intro {
-  background-color: aliceblue;
+  color: whitesmoke;
+  background-color: rgb(19, 19, 19);
   width: 75%;
   font-family: "JetBrains Mono",monospace;
   margin-top: 5%;
@@ -17,8 +18,9 @@
   /* margin: auto; */
 }
 .Home {
-  background-color: aliceblue;
-  width: 55%;
+  background-color: rgb(19, 19, 19);
+
+  width: 72%;
   font-family: "JetBrains Mono",monospace;
   margin-top: 5%;
   margin-left: auto;
@@ -37,30 +39,35 @@
 }
 
 .companynameheader{
-  font-family: Sans-Serif;
   font-weight: bold;
-  font-size: 2em;
+  font-family: "JetBrains Mono",monospace;
+  font-size: 1.5em;
+  margin-right: 20%;
+  margin-left: 5.5%;
 }
 .companyabout{
   margin-top: 10%;
 }
 .profile {
-
-  width: 85%;
+  
+  width: 90%;
   font-family: "JetBrains Mono",monospace;
-  margin-top: 5%;
+  margin-top: 4%;
   margin-left: auto;
   margin-right: auto;
   display: flex;
-  
-  justify-content: space-around;
+  justify-content: space-between;
 
 }
 .profileabout{
   padding: 5%;
-  width: 250px;
-  border-style: dashed;
+  width: 300px;
+  /* border-style: dashed; */
   display: flex;
+  border-radius: 15px;
+
+  box-shadow: 0px 1px 13px 2px #28283d;
+
   flex-direction: column;
   /* margin-right: 2%; */
   /* max-width : 42%; */
@@ -74,9 +81,13 @@
 }
 .createpost {
   padding: 5%;
-  border-style: dashed;
+  /* border-style: dashed; */
   display: flex;
   flex-direction: column;
+  border-radius: 15px;
+  width: 350px;
+
+  box-shadow: 0px 1px 13px 2px #28283d;
 }
 .profilevote{
   display: flex;
@@ -95,13 +106,18 @@
 }
 .votebutton{
   padding: 10px;
-  border: dashed;
+  /* border: dashed; */
+  border-radius: 15px;
+
+  box-shadow: 0px 1px 13px 2px #28283d;
   background: none;
   /* width: 95%; */
 }
 .homeform{
   display: flex;
   flex-direction: column;
+  /* padding-bottom: 10%; */
+  background-color: rgb(19, 19, 19);
 }
 .introheader {
   font-weight: bold;
@@ -125,17 +141,27 @@
   
 
 }
+.homeforminput{
+  color: black;
+  background-color: whitesmoke;
+  margin-bottom: 10px;
+  padding: 1%;
+}
+::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+  color: black;
+  opacity: 1; /* Firefox */
+}
 .homeheader {
-margin-top: 8px;
-margin-right: 20px;
-margin-left:7% ;  
-/* margin: auto; */
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  /* justify-content: center; */
-  font-family: Sans-Serif;
-  font-weight: bold;
+  width: 90%;
+  margin: auto;
+  margin-top: 20px;
+  /* margin: auto; */
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    /* justify-content: center; */
+    font-family: Sans-Serif;
+    font-weight: bold;
 }
 .votebutton2{
   border: dashed;
@@ -148,13 +174,16 @@ margin-left:7% ;
 }
 .profilevotemain{
   display: flex;
+  flex-direction: column;
 }
 .profilevoteright {
   display: flex;
-  flex-direction: column;
+  /* flex-direction: column; */
   margin:2% ;
-  justify-content: space-between;
-  height: 200px;
+  padding-top: 20px;
+  justify-content: space-around;
+  align-items: center;
+  /* height: 200px; */
 }
 .profilevoteleft {
   display: flex;
@@ -167,21 +196,8 @@ margin-left:7% ;
   height:50px;
   
 }
-/* .progress:after {
-  content:'\A';
-  position:absolute;
-  background:green;
-  top:0; bottom:0;
-  left:0; 
-  width:70%;
-} */
 
-.voteimage {
-  max-width : 70px;
-}
-.voteimage2 {
-  max-width : 50px;
-}
+
 .header:hover {
   font-size: 2.1em;
   color: #484958;
@@ -256,7 +272,7 @@ margin-left:7% ;
   cursor: pointer;
   display: inline-flex;
   font-family: "JetBrains Mono",monospace;
-  height: 48px;
+  height: 34px;
   justify-content: center;
   line-height: 1;
   list-style: none;
@@ -375,6 +391,8 @@ input:checked + .slider:before {
   z-index: 1000000;
 }
 .popup-2 {
+  border-color: white;
+  border-style: solid;
   position: fixed;
   top: 50%;
   left: 50%;
@@ -382,7 +400,7 @@ input:checked + .slider:before {
   transform: translate(-50%, -50%);
   width: 80vh;
   max-width: 700px;
-  background-color: #1e4dd8;
+  background-color: black;
 
   /* max-height: 80vh; */
   overflow: auto;
@@ -525,6 +543,17 @@ input:checked + .slider:before {
   100% {
     transform: rotate(360deg);
   }
+}
+
+
+
+.introheader1{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 72%;
+  margin: auto;
+  margin-top: 20px;
 }
 
 

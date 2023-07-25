@@ -51,6 +51,7 @@ export default function Vote({ headline, about,contract ,post_cont_id,companyNam
               <h2>{about}</h2>
               <p>{headline}</p>
               <div className="progress" style={{ height: 30 }}>
+                
         <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{ width: `${percvote}%` }}>{percvote}%</div>
       </div>
             </div>
