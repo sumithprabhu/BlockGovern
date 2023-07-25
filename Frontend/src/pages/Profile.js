@@ -28,7 +28,7 @@ export default function Profile() {
   const web3ModalRef = useRef();
 
   const [contract, setContract] = useState(null);
-  const CONTRACT_ADDRESS = "0xE677c862F37fD376C31Fb3BCe5C8D375a7b4D0C8";
+  const CONTRACT_ADDRESS = "0xb586a828Aa1fDFA6F2B5CcD1a4A66d15c254DA9f";
   const [company_about, setCompany_about] = useState("");
   const[postsid,setPostsid]=useState([]);
 
@@ -73,11 +73,13 @@ export default function Profile() {
   };
   const handleCreatePost = async() => {
     if (Headline.trim() && About.trim() ) {
+      const amount = await contract.retrieve_post_amount(companyName)
+      alert(`A cost of ${parseInt(amount)/(10**18)} matic would be charged for the post`)
       setLoading(true);
       setTransactionUpdates("Publishing post")
       const result=await handleJsonSubmit();
       console.log("resultpost:",result)
-      const amount = await contract.retrieve_post_amount(companyName)
+      
       console.log(parseInt(amount))
       const createpost=await contract.post(companyName,result,cost*10**14,{value: (parseInt(amount).toString())});
       await createpost.wait();

@@ -9,7 +9,7 @@ import axios from 'axios';
 import TransactionPopUp from "../components/TransactionPopUp";
 
 export default function Home() {
-  const CONTRACT_ADDRESS="0xE677c862F37fD376C31Fb3BCe5C8D375a7b4D0C8";
+  const CONTRACT_ADDRESS="0xb586a828Aa1fDFA6F2B5CcD1a4A66d15c254DA9f";
   const navigate = useNavigate();
 
   const [companyName, setCompanyName] = useState("");
@@ -90,6 +90,7 @@ export default function Home() {
   };
 
   const handleCreateButtonClick = async () => {
+    
     const queryParams = new URLSearchParams();
     queryParams.append("companyName", companyName);
     setLoading(true);
@@ -155,7 +156,7 @@ export default function Home() {
             onChange={handleAmountChange}
             type="number"
             min="0"
-            placeholder="Enter the cost of vote (10^15 ethers)"
+            placeholder="Enter the cost for each post (10^15 ethers)"
             class="homeforminput"
           />
 

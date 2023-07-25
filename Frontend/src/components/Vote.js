@@ -16,9 +16,11 @@ export default function Vote({ headline, about,contract ,post_cont_id,companyNam
   // };
 
   const handleVoteClick = async() => {
+    const cost=await contract.retrieve_vote_amount(post_cont_id);
+    alert(`A cost of ${parseInt(cost)/(10**18)} matic would be charged for the vote`)
     setLoading(true);
     setTransactionUpdates("Publishing vote");
-    const cost=await contract.retrieve_vote_amount(post_cont_id);
+    
 
     const vote_sub= await contract.vote(companyName,voteChoice,post_cont_id,{value: (parseInt(cost).toString())});
     await vote_sub.wait()

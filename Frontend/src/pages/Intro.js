@@ -24,15 +24,22 @@ export default function Intro() {
 
       <div className="Intro">
         <div className="introabout">
-          <h2 className="introheader">About BlockGovernance</h2>
+          <h2 className="introheader">About BlockGovern</h2>
+          <br></br>
           <h4>
-          "BlockGovern is a groundbreaking decentralized application (DApp) revolutionizing small organizations' governance systems. This innovative platform empowers organizations to create their governance structure without the complexities of launching a token. With just a few clicks, organizations can register and receive a personalized URL, leading to a dedicated page.
-
-Upon accessing their page, organizations will find a dynamic and interactive posts section, enabling members to engage in crucial decision-making processes. Each post will consist of a title, body, and a voting section with options 'yes' and 'no.' Anyone can post, but posting comes at a cost, determined at the time of account creation. This nominal fee fosters responsible and thoughtful contributions while generating revenue for the organization.
-
-The fees accumulated through voting participation are seamlessly transferred to the account creator—benefiting the organization and ensuring a self-sustaining ecosystem. This unique approach encourages active participation and incentivizes members to contribute constructively to their organization's governance.
-
-BlockGovern's user-friendly interface and fee distribution mechanism make it an ideal platform for small organizations seeking efficient and transparent governance solutions. Embracing blockchain's security and decentralization, BlockGovern fosters a sense of community, transparency, and collective decision-making like never before."
+            BlockGovern is a groundbreaking decentralized application (DApp)
+            revolutionizing small organization's governance systems. This
+            innovative platform empowers organizations to create their
+            governance structure without the complexities of launching a token.
+            With just a few clicks, organizations can register and receive a
+            personalized URL, leading to a dedicated page.
+            <br></br> 
+            <br></br>
+            BlockGovern's user-friendly interface and fee distribution mechanism make it an
+            ideal platform for small organizations seeking efficient and
+            transparent governance solutions. Embracing blockchain's security
+            and decentralization, BlockGovern fosters a sense of community,
+            transparency, and collective decision-making like never before."
           </h4>
         </div>
       </div>
